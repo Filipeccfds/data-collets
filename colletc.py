@@ -2,9 +2,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-
-def get_content(url):
-    headers = {
+headers = {
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
         'accept-language': 'pt-BR,pt;q=0.7',
         'cache-control': 'max-age=0',
@@ -23,11 +21,11 @@ def get_content(url):
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
     }
 
+
+def get_content(url):
     resp = requests.get(url, headers=headers)
     return resp
 
-
-# %%
 def get_basic_info(soup):
     
     div_page = soup.find("div",class_="td-page-content")
@@ -44,12 +42,38 @@ def get_basic_info(soup):
 
     return data
 
-# %%
-url = "https://www.residentevildatabase.com/personagens/ada-wong/"
-resp =get_content(url)
+def get_aparicoes(soup):
+    lis = soup.find("div",class_="td-page-content").find("h4").find_next().find_all("li")
+    aparicao = [i.text for i in lis]
+    
+    return aparicao
 
-if resp.status_code != 200:
-    print("Nao foi possivel colerta os dados")
-else:   
-    soup = BeautifulSoup(resp.text, 'html.parser')
-    get_basic_info(soup)
+
+def get_info(url):
+    resp =get_content(url)
+
+    if resp.status_code != 200:
+        print("Nao foi possivel colertar os dados")
+        return { }
+    else:   
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        data = get_basic_info(soup)
+        data["Aparicao"] = get_aparicoes(soup)
+        return data
+    
+
+def get_links():
+    url = "https://www.residentevildatabase.com/personagens"
+    resp= requests.get(url, headers=headers)
+    soup_personagens = BeautifulSoup(resp.text)
+
+    ancoras = (soup_personagens.find("div",class_="td-page-content").find_all("a"))
+    links = [i["href"] for i in ancoras]
+    return links
+
+# %% 
+
+
+
+
+
