@@ -1,6 +1,8 @@
 # %% 
 import requests
 from bs4 import BeautifulSoup
+from tqdm import tqdm
+import pandas as pd
 
 headers = {
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
@@ -36,7 +38,7 @@ def get_basic_info(soup):
     ems
     data = {}
     for i in ems:
-        chave,valor = i.text.split(":")
+        chave,valor, *_= i.text.split(":")
         chave = chave.strip(" ")
         data[chave] = valor.strip(" ")
 
@@ -74,6 +76,22 @@ def get_links():
 # %% 
 
 
+links = get_links()
+data = []
+for i in tqdm(links):
+    d = get_info(i)
+    d['Link'] = i
+    nome = i.strip("/").split("/").replace("-"," ").title()
+    d["Nome"] = nome
+    data.append(d)
+
+# %%
+# sempre que possovel evitar salvar em csv a nao ser algo simples pois os dados ficam bagunçados
+
+df = pd.DataFrame(data)
+df.to_parquet("dados_paquet", index=False)
+# %% o pickle eu salvo o estado do objeto em python
+df.to_pickle("dados_pickle.pkl")
 
 
 
