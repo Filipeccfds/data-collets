@@ -22,12 +22,12 @@ class Collector:
     def save_parquet(self, data):
         now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S.%f")
         df = pd.DataFrame(data)
-        df.to_parquet(f"/data/{self.instance_name}/parquet/{now}.parquet", index=False)
+        df.to_parquet(f"C:\\Users\\filip\\Documents\\data-collets\\Jovemnerd\\data\\{self.instance_name}\\parquet\\{now}.parquet", index=False)
 
 
     def save_json(self, data):
         now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S.%f")
-        with open(f"/data/{self.instance_name}/json/{now}.json", "w") as open_file:
+        with open(f"C:\\Users\\filip\\Documents\\data-collets\\Jovemnerd\\data\\{self.instance_name}\\json\\{now}.json", "w") as open_file:
             json.dump(data, open_file)
 
 
@@ -73,5 +73,5 @@ class Collector:
 # %%
 
 url = "https://api.jovemnerd.com.br/wp-json/jovemnerd/v1/nerdcasts/"
-collect = Collector(url, "episodios")
+collect = Collector(url, "cos")
 collect.auto_exec()

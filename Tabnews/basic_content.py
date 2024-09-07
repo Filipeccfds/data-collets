@@ -11,7 +11,7 @@ def get_response(**kwargs):
     return resp
 
 def save_data(data, option='json'):
-    now= datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S.%f")
+    now= datetime.datetime.now().strftime("%Y%m%d_%H%M%S.%f")
 
     if option ==  'json':
         with open(f"data/contents/json/{now}.json", 'w') as open_file:
